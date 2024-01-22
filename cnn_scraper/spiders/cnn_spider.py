@@ -35,11 +35,11 @@ class CnnSpider(scrapy.Spider):
                 .replace('Updated', '').replace('Published', '').replace('\n', '').replace('  ', ' ')
         date_match = re.search(r'\b(\w+ \d+, \d{4})\b', raw_date)
         if date_match:
-            item['date'] = date_match.group(1).replace(' ', '')
+            item['date'] = date_match.group(1)
         else:
             item['date'] = ''
 
-        item['author'] = response.css('div.byline_names span.byline__name::text').get(default='')
+        item['author'] = response.css('div.byline__names span.byline__name::text').get(default='')
         item['content'] = response.css('div.article__content div p::text').getall()
         item['link'] = response.url
         yield item
