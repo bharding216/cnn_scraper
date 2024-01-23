@@ -38,8 +38,20 @@ class CnnSpider(scrapy.Spider):
             item['date'] = date_match.group(1)
         else:
             item['date'] = ''
+          
+        def extract_author(response, css_selector, regex_pattern):
+            text = response.css(css_selector).get(default='')
+            match = re.search(regex_pattern, text)
+            return match.group(1) if match else text
 
-        item['author'] = response.css('div.byline__names span.byline__name::text').get(default='')
+        css_selectors = ['div.byline__names span.byline__name::text', 'div.byline__names::text']
+        regex_pattern = r'\s*By\s+(.*),\s+CNN'
+
+        for css_selector in css_selectors:
+            item['author'] = extract_author(response, css_selector, regex_pattern)
+            if item['author']:
+                break
+
         item['content'] = response.css('div.article__content div p::text').getall()
         item['link'] = response.url
         yield item

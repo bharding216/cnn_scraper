@@ -1,2 +1,3 @@
 **/__pycache__
 venv/
+cnn_scraper/spiders/__pycache__/
